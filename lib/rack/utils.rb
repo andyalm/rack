@@ -277,9 +277,14 @@ module Rack
         httponly = "; HttpOnly" if value[:httponly]
         value = value[:value]
       end
-      value = [value] unless Array === value
+      if value.is_a?(Hash)
+        value = build_nested_query(value)
+      else
+        value = [value] unless Array === value
+        value = value.map { |v| Rack::Utils.escape v }.join("&")
+      end
       cookie = escape(key) + "=" +
-        value.map { |v| escape v }.join("&") +
+        value +
         "#{domain}#{path}#{max_age}#{expires}#{secure}#{httponly}"
 
       case header["Set-Cookie"]

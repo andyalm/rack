@@ -536,6 +536,16 @@ describe Rack::Request do
     })
   end
 
+  should "parse cookies with multiple values as hash" do
+    req = Rack::Request.new Rack::MockRequest.env_for('', {
+        'HTTP_COOKIE' => 'foo=key1=val1&key2=val2; bar=baz'
+      })
+      req.cookies.should.equal({
+        'foo'    => { 'key1' => 'val1', 'key2' => 'val2' },
+        'bar'    => 'baz'
+      })
+  end
+
   should "provide setters" do
     req = Rack::Request.new(e=Rack::MockRequest.env_for(""))
     req.script_name.should.equal ""

@@ -65,6 +65,12 @@ describe Rack::Response do
     response["Set-Cookie"].should.equal ["foo=bar; domain=sample.example.com", "foo=bar; domain=.example.com"].join("\n")
   end
 
+  it "can set cookies with hash value" do
+    response = Rack::Response.new
+    response.set_cookie "foo", {:value => { "key1" => "val1", "key2" => "val2" }}
+    response["Set-Cookie"].should.equal "foo=key1=val1&key2=val2"
+  end
+
   it "formats the Cookie expiration date accordingly to RFC 6265" do
     response = Rack::Response.new
 
